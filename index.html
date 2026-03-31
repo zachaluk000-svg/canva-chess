@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Canva Chess</title>
+    <link rel="stylesheet" href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css">
+    <style>
+        body { background: #222; display: flex; justify-content: center; padding: 20px; }
+        #board { width: 500px; }
+    </style>
+</head>
+<body>
+    <div id="board"></div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+
+    <script>
+        var game = new Chess();
+        var board = null;
+
+        function onDragStart (source, piece, position, orientation) {
+            if (game.game_over()) return false;
+            if ((game.turn() === 'w' && piece.search(/^b/) !== -1) ||
+                (game.turn() === 'b' && piece.search(/^w/) !== -1)) {
+                return false;
+            }
+        }
+
+        function onDrop (source, target) {
+            var move = game.move({ from: source, to: target, promotion: 'q' });
+            if (move === null) return 'snapback';
+        }
+
+        function onSnapEnd () { board.position(game.fen()); }
+
+        var config = {
+            draggable: true,
+            position: 'start',
+            onDragStart: onDragStart,
+            onDrop: onDrop,
+            onSnapEnd: onSnapEnd,
+            pieceTheme: function (piece) {
+                const ids = {
+                    'wP': '1JnpgWdi-ztlNPb7ukliMbWurOBAE6uFb',
+                    'wR': '1yI_5Of46wkJyo04EI3T-9QWIRrKEV1r_',
+                    'wN': '1HHlzeSw0jMN2PZ8v8mzUhEaF0H1pEb3i',
+                    'wB': '1aZD1n8f0ZLy-7CEtKnZi1BiTiDaY-10E',
+                    'wQ': '1zhVjG5R1LEN44vx2yVcWGpdHJTvl28Ml',
+                    'wK': '1cGA7LTUOtDqZOVRgZALHPoWLbIN0U67Z',
+                    'bP': '1IlDdIOYy2-CNBd7E4UMpjEfwSCHWZ6mc',
+                    'bR': '1eFlYQwR1hT0hAORVmVuTiJlM3HjdgmEn',
+                    'bN': '15nXjOEJaoG3cdFM38yLBaDD6FkczhgHR',
+                    'bB': '1x5q9htFoOJJ8ojJTb_gY8TFP9-orEHAM',
+                    'bQ': '1wLe_ctyD8jT3WfZ0Pvg7xYmDSZYJJvwI',
+                    'bK': '1bh8PKAGaylefXT-1yNXXJnqeWvQ_n2sB'
+                };
+                return 'https://drive.google.com/thumbnail?id=' + ids[piece] + '&sz=w100';
+            }
+        };
+        board = Chessboard('board', config);
+    </script>
+</body>
+</html>
